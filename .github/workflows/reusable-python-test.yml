@@ -1,0 +1,39 @@
+name: Reusable - Python test
+
+on:
+  workflow_call:
+    inputs:
+      app-path:
+        description: "Path to the Python app/package to lint"
+        required: true
+        type: string
+      tests-path:
+        description: "Path to the test directory"
+        required: false
+        type: string
+        default: "tests"
+      python-version:
+        required: false
+        type: string
+        default: "3.12"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r ${{ inputs.app-path }}/requirements.txt
+          pip install pytest flake8
+
+      - name: Lint
+        run: flake8 ${{ inputs.app-path }} --max-line-length=100
+
+      - name: Test
+        run: python -m pytest ${{ inputs.tests-path }} -v
