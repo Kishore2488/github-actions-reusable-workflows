@@ -1,0 +1,14 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-sample-app:
+    uses: ./.github/workflows/reusable-python-test.yml
+    with:
+      app-path: examples/sample-app
+      tests-path: examples/sample-app
